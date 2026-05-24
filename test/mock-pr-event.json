@@ -1,0 +1,23 @@
+{
+  "action": "opened",
+  "number": 7,
+  "pull_request": {
+    "number": 7,
+    "title": "Add user authentication",
+    "state": "open",
+    "user": { "login": "johndoe" },
+    "head": {
+      "sha": "a3f9c2d8e1b4f6a0c9d2e5f8",
+      "ref": "feature/add-auth"
+    },
+    "base": { "ref": "main" },
+    "changed_files": 5,
+    "additions": 120,
+    "deletions": 30
+  },
+  "repository": {
+    "name": "myapp",
+    "full_name": "acme/myapp",
+    "owner": { "login": "acme" }
+  }
+}
