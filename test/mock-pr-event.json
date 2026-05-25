@@ -1,23 +1,23 @@
 {
   "action": "opened",
-  "number": 7,
+  "number": 1,
   "pull_request": {
-    "number": 7,
-    "title": "Add user authentication",
+    "number": 1,
+    "title": "Test PR for ReviewForge",
     "state": "open",
-    "user": { "login": "johndoe" },
+    "user": { "login": "nitin-devx" },
     "head": {
       "sha": "a3f9c2d8e1b4f6a0c9d2e5f8",
-      "ref": "feature/add-auth"
+      "ref": "feature/test"
     },
     "base": { "ref": "main" },
-    "changed_files": 5,
-    "additions": 120,
-    "deletions": 30
+    "changed_files": 1,
+    "additions": 10,
+    "deletions": 2
   },
   "repository": {
-    "name": "myapp",
-    "full_name": "acme/myapp",
-    "owner": { "login": "acme" }
+    "name": "Reviewforge",
+    "full_name": "nitin-devx/Reviewforge",
+    "owner": { "login": "nitin-devx" }
   }
 }
