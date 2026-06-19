@@ -4,7 +4,9 @@ import * as github from '@actions/github';
 import { createGithubClient } from "./github/client.js";
 import { fetchPRFiles } from "./github/pr-fetcher.js"
 import { parsePRDiff } from "./parsers/diff_parser.js";
-
+import { createGeminiClient } from './ai/gemini-service.js';
+import { buildChunks } from './chunking/chunker.js';
+import { reviewAllChunks } from './ai/reviewer.js';
 
 async function run() {
     try {
@@ -44,7 +46,7 @@ async function run() {
 
 
 
-        const token = core.getInput('github_token') || process.env.Github_token;
+        const token = core.getInput('github_Token') || process.env.Github_token;
 
         const octokit = createGithubClient(token);
 
@@ -60,7 +62,27 @@ async function run() {
         }
 
 
-        core.info('Diff parsing commplete . AI pipeline next')
+        core.info('Diff parsing complete — starting AI review...');
+
+        // Level 3 — AI review pipeline (Gemini)
+        const geminiKey = core.getInput('gemini_api_key') || process.env.GEMINI_API_KEY;
+        const geminiClient = createGeminiClient(geminiKey);
+
+        const chunks = buildChunks(parsedDiff);
+        const reviews = await reviewAllChunks(geminiClient, chunks);
+
+        for (const fileReview of reviews) {
+            if (fileReview.findings.length === 0) {
+                core.info(`${fileReview.filename} — no issues found`);
+                continue;
+            }
+
+            core.info(`\n${fileReview.filename} — ${fileReview.findings.length} finding(s):`);
+            for (const finding of fileReview.findings) {
+                core.info(`  [${finding.severity.toUpperCase()}] L${finding.line}: ${finding.issue}`);
+                core.info(`    → ${finding.suggestion}`);
+            }
+        }
 
     } catch (error) {
         core.setFailed(`ReviewForge failed ${error.message}`);
