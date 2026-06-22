@@ -2,15 +2,18 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 
 import { createGithubClient } from "./github/client.js";
-import { fetchPRFiles } from "./github/pr-fetcher.js"
+import { fetchPRFiles, fetchPRHeadSha } from "./github/pr-fetcher.js";
 import { parsePRDiff } from "./parsers/diff_parser.js";
 import { createGeminiClient } from './ai/gemini-service.js';
 import { buildChunks } from './chunking/chunker.js';
 import { reviewAllChunks } from './ai/reviewer.js';
+import { buildReviewComments } from './github/comment-mapper.js';
+import { buildSummary } from './reviewers/summary-builder.js';
+import { postReview } from './github/review-poster.js';
 
 async function run() {
     try {
-       
+
         const { context } = github;
 
         //Only runs on pr events we should thinks
@@ -46,7 +49,7 @@ async function run() {
 
 
 
-        const token = core.getInput('github_Token') || process.env.Github_token;
+        const token = core.getInput('github_token') || process.env.GITHUB_TOKEN;
 
         const octokit = createGithubClient(token);
 
@@ -71,18 +74,24 @@ async function run() {
         const chunks = buildChunks(parsedDiff);
         const reviews = await reviewAllChunks(geminiClient, chunks);
 
-        for (const fileReview of reviews) {
-            if (fileReview.findings.length === 0) {
-                core.info(`${fileReview.filename} — no issues found`);
-                continue;
-            }
+        // Level 4 — post the review (runs ONCE, after all chunks are reviewed)
+        const comments = buildReviewComments(reviews);
+        const summary = buildSummary(reviews);
 
-            core.info(`\n${fileReview.filename} — ${fileReview.findings.length} finding(s):`);
-            for (const finding of fileReview.findings) {
-                core.info(`  [${finding.severity.toUpperCase()}] L${finding.line}: ${finding.issue}`);
-                core.info(`    → ${finding.suggestion}`);
-            }
-        }
+        core.info(summary.markdown);
+
+        const realHeadSha = await fetchPRHeadSha(octokit, owner, repo, prNumber);
+
+        await postReview(octokit, {
+            owner,
+            repo,
+            prNumber,
+            commitId: realHeadSha,
+            comments,
+            summaryMarkdown: summary.markdown,
+        });
+
+        core.info('ReviewForge run complete.');
 
     } catch (error) {
         core.setFailed(`ReviewForge failed ${error.message}`);

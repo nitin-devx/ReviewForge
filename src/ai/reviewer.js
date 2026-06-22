@@ -7,16 +7,13 @@ export async function reviewAllChunks(geminiClient, chunks) {
   for (const chunk of chunks) {
     core.info(`Reviewing ${chunk.filename}...`);
 
-    const findings = await reviewChunk(
-      geminiClient,
-      chunk.filename,
-      chunk.formattedDiff
-    );
-
-    results.push({
-      filename: chunk.filename,
-      findings,
-    });
+    try {
+      const findings = await reviewChunk(geminiClient, chunk.filename, chunk.formattedDiff);
+      results.push({ filename: chunk.filename, findings });
+    } catch (error) {
+      core.warning(`Skipping ${chunk.filename} — review failed after retries: ${error.message}`);
+      results.push({ filename: chunk.filename, findings: [], error: true });
+    }
   }
 
   const totalFindings = results.reduce((sum, r) => sum + r.findings.length, 0);

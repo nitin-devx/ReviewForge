@@ -51,7 +51,7 @@ If you find no issues, respond with: { "findings": [] }`;
       config: {
         systemInstruction: systemPrompt,
         temperature: 0.1,          // low temperature = deterministic output
-        maxOutputTokens: 1000,
+        maxOutputTokens: 2048,
         responseMimeType: 'application/json',
         responseSchema: {
           type: 'object',
@@ -79,6 +79,7 @@ If you find no issues, respond with: { "findings": [] }`;
 
   const raw = response.text || '{"findings":[]}';
   // gemini occasionally return percent encoded whitespaces so i  changed  instead of real newline/space char with %0A and %20, so we need to sanitize it before parsing
+  
   const sanitized = raw.replace(/%0A/g,'\n').replace(/%20/g,' ');
   try {
     const parsed = JSON.parse(sanitized);
@@ -87,7 +88,9 @@ If you find no issues, respond with: { "findings": [] }`;
     core.info(`  → ${findings.length} finding(s) from AI`);
     return findings;
   } catch {
-    core.warning(`Failed to parse AI response as JSON. Raw: ${sanitized.slice(0, 200)}`);
+    core.warning(`Failed to parse AI response as 
+    JSON. Raw: ${sanitized.slice(0, 200)}`);
+    
     return [];
   }
 }

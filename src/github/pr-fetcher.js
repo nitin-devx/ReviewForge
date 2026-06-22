@@ -22,3 +22,14 @@ export async function fetchPRFiles(octokit, owner, repo, prNumber){
         patch: f.patch,
     }));
 }
+
+
+export async function fetchPRHeadSha(octokit, owner, repo, prNumber) {
+  const { data } = await octokit.rest.pulls.get({
+    owner,
+    repo,
+    pull_number: prNumber,
+  });
+
+  return data.head.sha;
+}
