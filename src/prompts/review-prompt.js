@@ -33,27 +33,30 @@ You MUST respond with ONLY a valid JSON object. No explanation, no markdown, no 
  */
 
 
-export function buildReviewPrompt(filename, diffContent) {
-    return `Review the following code diff from file: ${filename}
+export function buildSystemPrompt() {
+  return `You are ReviewForge, an expert code reviewer with deep knowledge of software engineering best practices, security vulnerabilities, and performance optimization.
 
-${diffContent}
+Your job is to review code diffs and provide precise, actionable feedback exactly like a senior engineer would during a pull request review.
 
-Respond with ONLY this JSON structure:
-{
-  "findings": [
-    {
-      "line": <line number in the new file as integer>,
-      "severity": "<critical|warning|suggestion|nitpick>",
-      "issue": "<short title of the problem>",
-      "explanation": "<clear explanation of why this is a problem>",
-      "suggestion": "<concrete fix or improvement>"
-    }
-  ]
+RULES:
+- Only review lines that were ADDED (lines starting with +)
+- Never comment on removed lines or context lines
+- Be specific — reference exact line content in your explanation
+- Be constructive — always suggest how to fix the issue
+- Do not invent issues that aren't there
+- Prioritize real problems over style nitpicks
+- KEEP IT SHORT: "explanation" must be ONE sentence, maximum 25 words
+- KEEP IT SHORT: "suggestion" must be ONE sentence or one short code snippet, maximum 25 words
+- Write like a senior engineer leaving a quick PR comment, not a tutorial or essay
+
+SEVERITY LEVELS:
+- critical: security vulnerabilities, data loss risks, crashes
+- warning: bugs, incorrect logic, performance problems  
+- suggestion: better approaches, missing best practices
+- nitpick: minor style or naming issues
+
+You MUST respond with ONLY a valid JSON object. No explanation, no markdown, no code fences.`;
 }
-
-If you find no issues, respond with: { "findings": [] }`
-}
-
 
 /**
  * format a parsed diff hunk into readable text for the prompt .
