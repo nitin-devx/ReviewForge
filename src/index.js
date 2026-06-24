@@ -51,7 +51,7 @@ async function run() {
         core.info(`DEBUG: process.env.GITHUB_TOKEN length = ${(process.env.GITHUB_TOKEN || '').length}`);
         core.info(`DEBUG: INPUT_GITHUB_TOKEN length = ${(process.env.INPUT_GITHUB_TOKEN || '').length}`);
 
-        const token = core.getInput('github_token') || process.env.GITHUB_TOKEN;
+        
 
         const token = core.getInput('github_token') || process.env.GITHUB_TOKEN;
 
