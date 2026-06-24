@@ -49,7 +49,7 @@ async function run() {
 
         
 
-        const token = core.getInput('github_token') || process.env.GITHUB_TOKEN;
+        
 
         const token = core.getInput('github_token') || process.env.GITHUB_TOKEN;
 
