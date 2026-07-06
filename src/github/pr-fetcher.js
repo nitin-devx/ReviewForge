@@ -11,7 +11,7 @@ export async function fetchPRFiles(octokit, owner, repo, prNumber){
 
     const reviewableFiles =files.filter(f=> f.patch !==undefined);
 
-    core.info(`Found ${files.length} changed file(s)__ ${reviewableFiles.length} reviewablw`);
+    core.info(`Found ${files.length} changed file(s)__ ${reviewableFiles.length} reviewable`);
 
 
     return reviewableFiles.map(f=>({

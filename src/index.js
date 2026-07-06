@@ -3,13 +3,14 @@ import * as github from '@actions/github';
 
 import { createGithubClient } from "./github/client.js";
 import { fetchPRFiles, fetchPRHeadSha } from "./github/pr-fetcher.js";
-import { parsePRDiff } from "./parsers/diff_parser.js";
+import { parsePRDiff } from "./parsers/diff-parser.js";
 import { createGeminiClient } from './ai/gemini-service.js';
 import { buildChunks } from './chunking/chunker.js';
 import { reviewAllChunks } from './ai/reviewer.js';
 import { buildReviewComments } from './github/comment-mapper.js';
 import { buildSummary } from './reviewers/summary-builder.js';
 import { postReview } from './github/review-poster.js';
+import { loadConfig } from './config/loader.js';
 
 async function run() {
     try {
@@ -47,7 +48,7 @@ async function run() {
         core.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         core.info('Review pipeline starting...');
 
-        
+        const config = loadConfig();
 
         
 
@@ -69,12 +70,13 @@ async function run() {
 
         core.info('Diff parsing complete — starting AI review...');
 
+
         // Level 3 — AI review pipeline (Gemini)
         const geminiKey = core.getInput('gemini_api_key') || process.env.GEMINI_API_KEY;
         const geminiClient = createGeminiClient(geminiKey);
 
         const chunks = buildChunks(parsedDiff);
-        const reviews = await reviewAllChunks(geminiClient, chunks);
+        const reviews = await reviewAllChunks(geminiClient, chunks,config.allowedSeverities);
 
         // Level 4 — post the review (runs ONCE, after all chunks are reviewed)
         const comments = buildReviewComments(reviews);
