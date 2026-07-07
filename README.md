@@ -27,17 +27,14 @@ Every finding includes a severity level, a clear explanation, and a concrete sug
 
 **Inline comment on a PR diff line:**
 
-```
-<img width="862" height="790" alt="image" src="https://github.com/user-attachments/assets/e239af35-2c44-4031-9d8d-a259343dcaff" />
+inline-comment-example.png
 
-```
 
 **PR summary comment:**
 
-```
+
 <img width="846" height="642" alt="image" src="https://github.com/user-attachments/assets/bbcb3420-ebec-4137-878b-af2f4a67e179" />
 
-```
 
 ---
 
