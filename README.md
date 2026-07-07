@@ -28,30 +28,15 @@ Every finding includes a severity level, a clear explanation, and a concrete sug
 **Inline comment on a PR diff line:**
 
 ```
-🟠 WARNING: Lack of input validation for item price
+<img width="862" height="790" alt="image" src="https://github.com/user-attachments/assets/e239af35-2c44-4031-9d8d-a259343dcaff" />
 
-No null check before accessing user.email — will throw if email is undefined.
-
-Suggested fix: Add `if (!user || !user.email)` guard before this line.
-
-— ReviewForge AI
 ```
 
 **PR summary comment:**
 
 ```
-🤖 ReviewForge Summary
+<img width="846" height="642" alt="image" src="https://github.com/user-attachments/assets/bbcb3420-ebec-4137-878b-af2f4a67e179" />
 
-Reviewed 3 file(s) — found 5 issue(s) across 2 file(s).
-
-| Severity  | Count |
-|-----------|-------|
-| 🔴 Critical   | 1 |
-| 🟠 Warning    | 2 |
-| 🟡 Suggestion | 1 |
-| ⚪ Nitpick    | 1 |
-
-See inline comments below for details.
 ```
 
 ---
