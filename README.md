@@ -27,7 +27,15 @@ Every finding includes a severity level, a clear explanation, and a concrete sug
 
 **Inline comment on a PR diff line:**
 
-inline-comment-example.png
+```
+🟠 WARNING: Lack of input validation for item price
+ 
+No null check before accessing user.email — will throw if email is undefined.
+ 
+Suggested fix: Add `if (!user || !user.email)` guard before this line.
+ 
+— ReviewForge AI
+```
 
 
 **PR summary comment:**
